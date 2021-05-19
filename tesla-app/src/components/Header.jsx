@@ -1,55 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import MenuIcon from "@material-ui/icons/Menu";
+import CloseIcon from "@material-ui/icons/Close";
+import { useSelector, useDispatch } from "react-redux";
 
 function Header() {
+  const [openBuger, setOpenBurger] = useState(false);
+
+  const cars = useSelector((state) => state.cars);
+
   return (
     <Container>
       <a href>
         <img src="/images/logo.svg" alt="tesla logo" />
       </a>
       <Menu>
-        <a href>Model S</a>
-
-        <a href>Model 3</a>
-
-        <a href>Model X</a>
-
-        <a href>Model Y</a>
+        {cars &&
+          cars.map((car, index) => (
+            <a href key={index}>
+              {car}
+            </a>
+          ))}
       </Menu>
       <RightMenu>
         <a href>Shop</a>
         <a href>Tesla Account</a>
-        <CustomMenu />
+        <CustomMenu onClick={() => setOpenBurger(true)} />
       </RightMenu>
-      <BurgerNavMenu>
-        <li>
-          <a href>Existing Invetory</a>
-        </li>
-        <li>
-          <a href>Used Invetory</a>
-        </li>
-        <li>
-          <a href>Trade-In</a>
-        </li>
-        <li>
-          <a href>Cybertruck</a>
-        </li>
-        <li>
-          <a href>Roadster</a>
-        </li>
-        <li>
-          <a href>Existing Invetory</a>
-        </li>
-        <li>
-          <a href>Existing Invetory</a>
-        </li>
-        <li>
-          <a href>Existing Invetory</a>
-        </li>
-        <li>
-          <a href>Existing Invetory</a>
-        </li>
+      <BurgerNavMenu show={openBuger}>
+        <CustomClose onClick={() => setOpenBurger(false)} />
+        {cars &&
+          cars.map((car, index) => (
+            <li key={index}>
+              <a href>{car}</a>
+            </li>
+          ))}
       </BurgerNavMenu>
     </Container>
   );
@@ -67,6 +52,7 @@ const Container = styled.div`
   top: 0;
   left: 0;
   right: 0;
+  z-index: 1;
 `;
 
 const Menu = styled.div`
@@ -105,8 +91,30 @@ const CustomMenu = styled(MenuIcon)`
 const BurgerNavMenu = styled.div`
   position: fixed;
   top: 0;
-  /* bottom: 0; */
+  bottom: 0;
   right: 0;
   background: white;
   width: 300px;
+  z-index: 16;
+  list-style: none;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+  transform: ${(props) => (props.show ? "translateX(0)" : "translateX(100%)")};
+  transition: transform 250ms ease;
+
+  li {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+    a {
+      font-weight: 600;
+    }
+  }
+`;
+
+const CustomClose = styled(CloseIcon)`
+  align-self: flex-end;
+  cursor: pointer;
 `;
